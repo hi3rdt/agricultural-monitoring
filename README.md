@@ -115,7 +115,7 @@ Hệ thống sử dụng kiến trúc tách biệt:
 
 1.  **Clone repo:** 
     ```bash
-    git clone [https://github.com/hi3rdt/agricultural-embedded.git](https://github.com/hi3rdt/agricultural-monitoring.git)
+    git clone [https://github.com/hi3rdt/agricultural-monitoring.git](https://github.com/hi3rdt/agricultural-monitoring.git)
     ```
 2.  **Mở dự án:** Mở thư mục `agricultural-monitoring` bằng **VS Code** đã cài đặt tiện ích **PlatformIO**.
 3.  **Cấu hình (Nếu cần):** Kiểm tra file `lib/Config/Config.h`. Đảm bảo các `DEFAULT_..._URL` (cho ESP32-CAM) trỏ đúng đến IP và cổng của máy tính đang chạy FastAPI (ví dụ: `http://192.168.x.x:8080`).
