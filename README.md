@@ -22,7 +22,7 @@ Dự án này được chia thành ba thành phần (microservices). Code cho m�
     * API server xử lý logic, chạy model AI (YOLO, Gemini) và giao tiếp với database.
 
 3.  **Embedded (PlatformIO):**
-    * **Link:** *(Bạn cần tạo repo này và đẩy code PlatformIO lên, ví dụ: https://github.com/hi3rdt/agricultural-embedded.git)*
+    * **Link:** [https://github.com/hi3rdt/agricultural-embedded.git](https://github.com/hi3rdt/agricultural-monitoring.git)
     * Chứa code C++ cho cả ESP32 Master (cảm biến/bơm) và ESP32-CAM (camera).
 
 ---
@@ -113,11 +113,11 @@ Hệ thống sử dụng kiến trúc tách biệt:
 
 ### 3. Embedded (ESP32 & ESP32-CAM)
 
-1.  **Clone repo:** (Giả sử bạn đã tạo repo tên `agricultural-embedded`)
+1.  **Clone repo:** 
     ```bash
-    git clone [https://github.com/hi3rdt/agricultural-embedded.git](https://github.com/hi3rdt/agricultural-embedded.git)
+    git clone [https://github.com/hi3rdt/agricultural-embedded.git](https://github.com/hi3rdt/agricultural-monitoring.git)
     ```
-2.  **Mở dự án:** Mở thư mục `agricultural-embedded` bằng **VS Code** đã cài đặt tiện ích **PlatformIO**.
+2.  **Mở dự án:** Mở thư mục `agricultural-monitoring` bằng **VS Code** đã cài đặt tiện ích **PlatformIO**.
 3.  **Cấu hình (Nếu cần):** Kiểm tra file `lib/Config/Config.h`. Đảm bảo các `DEFAULT_..._URL` (cho ESP32-CAM) trỏ đúng đến IP và cổng của máy tính đang chạy FastAPI (ví dụ: `http://192.168.x.x:8080`).
 4.  **Build & Upload:**
     * Kết nối ESP32 Master, chọn môi trường `esp32master` ở thanh trạng thái VS Code, và nhấn nút **Upload (➡️)**.
