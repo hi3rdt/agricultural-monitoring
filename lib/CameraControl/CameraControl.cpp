@@ -44,27 +44,16 @@ bool CameraControl::begin() {
 }
 
 void CameraControl::captureAndUpload(const char* uploadUrl, HttpClient& httpClient) {
-  if (!initialized) {
-    Serial.println("Error: Camera not initialized.");
-    return;
-  }
+  if (!initialized) { Serial.println("Error: Camera not initialized."); return; }
 
-  Serial.println("Capturing image with flash...");
   digitalWrite(_flashPin, HIGH);
-  unsigned long flash_on_time = millis();
-  while (millis() - flash_on_time < 150) { yield(); } // Non-blocking wait
-
+  delay(100); 
   camera_fb_t* fb = esp_camera_fb_get();
   digitalWrite(_flashPin, LOW);
 
-  if (!fb) {
-    Serial.println("Failed to capture image!");
-    return;
-  }
+  if (!fb) { Serial.println("Failed to capture image!"); return; }
 
-  // Giao việc upload cho HttpClient
+  Serial.printf("Image captured: %zu bytes\n", fb->len);
   httpClient.uploadImage(uploadUrl, fb);
-
-  // Giải phóng bộ nhớ
-  esp_camera_fb_return(fb);
+  esp_camera_fb_return(fb); 
 }

@@ -1,22 +1,16 @@
 #ifndef HTTP_CLIENT_WRAPPER_H
 #define HTTP_CLIENT_WRAPPER_H
-
 #include <Arduino.h>
-#include <WiFi.h>
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
-#include "esp_camera.h" // Cần cho kiểu camera_fb_t
-
-class HTTPClient {
+#include "esp_camera.h"
+class HttpClient {
 public:
   HttpClient();
-  bool sendSensorData(const char* url, float temp, float humid, float soil, bool pumpStatus);
-  DynamicJsonDocument* fetchJson(const char* url, size_t maxJsonSize = 1024);
+  // Trả về true nếu nhận được lệnh "capture"
+  bool getCommand(const char* url, JsonDocument& doc); 
   bool uploadImage(const char* url, camera_fb_t* fb);
-  bool testConnection(const char* url);
-
 private:
-  HTTPClient http; 
+  HTTPClient http;
 };
-
-#endif // HTTP_CLIENT_WRAPPER_H
+#endif
