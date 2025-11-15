@@ -2,10 +2,7 @@
 
 Một hệ sinh thái IoT end-to-end (từ phần cứng đến đám mây) được xây dựng để giám sát điều kiện môi trường, tự động hóa tưới tiêu và phát hiện bệnh cây trồng theo thời gian thực bằng Trí tuệ nhân tạo.
 
-## 🚀 Bản Demo Trực Tuyến (Live Demo)
-
-* **Frontend (Dashboard):** [https://agricultural-frontend.onrender.com/](https://agricultural-frontend.onrender.com/)
-* **Backend (API Status):** [https://agricultural-backend.onrender.com/](https://agricultural-backend.onrender.com/)
+(Lưu ý: Dự án này được thiết kế để chạy trên mạng nội bộ (local) và sử dụng HiveMQ broker).
 
 ---
 
@@ -14,15 +11,15 @@ Một hệ sinh thái IoT end-to-end (từ phần cứng đến đám mây) đư
 Dự án này được chia thành ba thành phần (microservices). Code cho mỗi thành phần được lưu trữ tại các kho lưu trữ riêng biệt:
 
 1.  **Frontend (Next.js):**
-    * **Link:** [https://github.com/hi3rdt/agricultural-frontend.git](https://github.com/hi3rdt/agricultural-frontend.git)
+    * **Link:** [https://github.com/hi3rdt/agricultural-fe](https://github.com/hi3rdt/agricultural-fe)
     * Giao diện dashboard cho người dùng, xây dựng bằng Next.js và Shadcn UI.
 
 2.  **Backend (FastAPI):**
-    * **Link:** [https://github.com/hi3rdt/agricultural-backend.git](https://github.com/hi3rdt/agricultural-backend.git)
+    * **Link:** [https://github.com/hi3rdt/agricultural-be](https://github.com/hi3rdt/agricultural-be)
     * API server xử lý logic, chạy model AI (YOLO, Gemini) và giao tiếp với database.
 
 3.  **Embedded (PlatformIO):**
-    * **Link:** [https://github.com/hi3rdt/agricultural-embedded.git](https://github.com/hi3rdt/agricultural-monitoring.git)
+    * **Link:** [https://github.com/hi3rdt/agricultural-monitoring.git](https://github.com/hi3rdt/agricultural-monitoring.git)
     * Chứa code C++ cho cả ESP32 Master (cảm biến/bơm) và ESP32-CAM (camera).
 
 ---
@@ -31,18 +28,18 @@ Dự án này được chia thành ba thành phần (microservices). Code cho m�
 
 
 
-Hệ thống sử dụng kiến trúc tách biệt:
+Hệ thống sử dụng kiến trúc Hybrid (MQTT + HTTP):
 
-1.  **Embedded (ESP32/ESP32-CAM):** Các thiết bị này hoạt động như client.
-    * **ESP32 Master** đọc cảm biến (DHT22, Soil) và gửi (POST) lên Backend. Sau đó, nó lấy (GET) trạng thái điều khiển (chế độ, ngưỡng) để vận hành bơm.
+1.  **Embedded (Thiết Bị Nhúng):** Các thiết bị này hoạt động như client.
+    * **ESP32 Master** Publish: Gửi dữ liệu cảm biến (DHT22, Soil) lên topic agri/sensor. Subscribe: Lắng nghe topic agri/status để nhận lệnh điều khiển (chế độ, ngưỡng, bơm) từ Backend.
     * **ESP32-CAM** liên tục hỏi (GET) Backend xem có lệnh chụp không. Khi có lệnh, nó chụp ảnh (với flash) và POST ảnh lên Backend.
 2.  **Backend (FastAPI):** Là bộ não trung tâm.
-    * Nhận dữ liệu từ các ESP32, lưu vào SQLite.
+    * MQTT Client: Kết nối đến HiveMQ Broker, lắng nghe agri/sensor (để lưu vào SQLite) và publish lệnh xuống agri/status          (khi người dùng thao tác trên web).
     * Nhận ảnh, kích hoạt **YOLO** để phát hiện bệnh.
     * Gọi **Gemini API** để phân tích bệnh và đề xuất điều trị.
     * Gửi cảnh báo qua **Telegram**.
     * Cung cấp API cho Frontend.
-3.  **Frontend (Next.js):**
+4.  **Frontend (Next.js):**
     * Hiển thị dữ liệu từ Backend API.
     * Gửi lệnh (thay đổi chế độ, bật/tắt bơm, yêu cầu chụp) đến Backend.
 
@@ -52,8 +49,9 @@ Hệ thống sử dụng kiến trúc tách biệt:
 
 * **Backend:** FastAPI (Python), Uvicorn, YOLO, Google Gemini API, SQLite, HTTPX, `python-dotenv`
 * **Frontend:** Next.js, React, TypeScript, Tailwind CSS, Shadcn UI, Recharts
-* **Embedded:** C++, PlatformIO, ESP32, ESP32-CAM, WiFiManager, ArduinoJson
-* **DevOps & Dịch vụ:** Render (CI/CD), Git, GitHub, Telegram Bot API, OpenWeatherMap API
+* **Embedded:** C++, PlatformIO, ESP32, ESP32-CAM, WiFiManager, ArduinoJson, PubSubClient (MQTT)
+* **Broker:** HiveMQ (MQTT Cloud Broker)
+* **APIs & Dịch vụ::** Git, GitHub, Telegram Bot API, OpenWeatherMap API
 
 ---
 
@@ -65,8 +63,8 @@ Hệ thống sử dụng kiến trúc tách biệt:
 
 1.  **Clone repo:**
     ```bash
-    git clone [https://github.com/hi3rdt/agricultural-backend.git](https://github.com/hi3rdt/agricultural-backend.git)
-    cd agricultural-backend
+    git clone [https://github.com/hi3rdt/agricultural-be.git](https://github.com/hi3rdt/agricultural-be.git)
+    cd agricultural-be
     ```
 2.  **Tạo môi trường ảo & Kích hoạt:**
     ```bash
@@ -91,8 +89,8 @@ Hệ thống sử dụng kiến trúc tách biệt:
 
 1.  **Clone repo:** (Mở một terminal mới)
     ```bash
-    git clone [https://github.com/hi3rdt/agricultural-frontend.git](https://github.com/hi3rdt/agricultural-frontend.git)
-    cd agricultural-frontend
+    git clone [https://github.com/hi3rdt/agricultural-fe.git](https://github.com/hi3rdt/agricultural-fe.git)
+    cd agricultural-fe
     ```
 2.  **Cài đặt Node.js & pnpm:** Tải [Node.js](https://nodejs.org/) (khuyên dùng 18+). Sau đó chạy `npm install -g pnpm`.
 3.  **Cài đặt thư viện:**
@@ -133,6 +131,6 @@ Sau khi cả 3 thành phần đều chạy, hệ thống sẽ hoạt động.
 
 ## 👤 Tác Giả (Author)
 
-* **Tên:** [Tên của bạn]
+* **Tên:** [Hiep Duc Tu]
 * **GitHub:** [@hi3rdt](https://github.com/hi3rdt)
-* **LinkedIn:** (Thêm link LinkedIn của bạn)
+  
